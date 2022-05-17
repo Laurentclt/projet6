@@ -1,8 +1,19 @@
 const express = require('express');
+const mongoose = require('mongoose')
 
-const app = express();
+const { dirname } = require('path');
+const path = require('path')
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require ('./routes/user')
+
+const app = express();
+
+mongoose.connect('mongodb+srv://laurent:collet@hottakes.i0uha.mongodb.net/HotTakes?retryWrites=true&w=majority',
+{    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('connexion à MongoDB réussie'))
+.catch(() => console.log('connexion à mongoDB échouée'))
 
 app.use(express.json());
 
@@ -12,35 +23,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
-app.use((req, res, next)=> {
-    console.log("server = on")
-    res.status(200)
-    next()
-})
-// app.get('/api/sauces', (req, res, next) => {
-//     res.status(200).json({message : "voila toutes les sauces !"})
-// })
-// app.get('/api/sauces/:id', (req, res, next) => {
-//     res.status(200).json({message : "voici la sauce demandée !"})
-// })
-// app.post('/api/sauces', (req, res, next) => {
-//     console.log(req.body)
-//     res.status(201).json({message : "la sauce a été ajoutée !"})
-// }) 
-// app.put('/api/sauces/:id', (req, res, next) => {
-//     console.log(req.body)
-//     res.status(200).json({message : "la sauce a été modifiée!"}) 
-// })
-// app.delete('/api/sauces/:id', (req, res, next) => {
-//     console.log(req.body)
-//     res.status(200).json({message : "la sauce a été supprimée!"}) 
-// })
-// app.post('/api/sauces/:id/like', (req, res, next) => {
-//     console.log(req.body)
-//     res.status(200).json({message : "like ajouté"})
-// })
 
-
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces' , sauceRoutes);
 
 app.use('/api/auth', userRoutes)

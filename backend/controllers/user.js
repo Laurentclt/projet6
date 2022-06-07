@@ -20,6 +20,7 @@ exports.signup = (req, res, next) => {
 };
 
 // permet la connexion d'un utilisateur
+
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {

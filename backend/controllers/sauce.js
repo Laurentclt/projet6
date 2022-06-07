@@ -42,13 +42,12 @@ exports.updateSauce = (req, res, next) => {
     ? {
         ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
+          req.file.filename}`,
       }
     : { ...req.body };
     if (sauceObject.userId !== req.auth.userId) {
       res.status(401).json({
-        error: new Error("Unauthorized request!").message,
+        error: new Error("requête non autorisée!").message,
       });
     }
     else {Sauce.updateOne(
@@ -65,12 +64,12 @@ exports.deleteSauce = (req, res, next) => {
     const filename = sauce.imageUrl.split("/images/")[1];
       if (!sauce) {
         res.status(400).json({
-          error: new Error("No such sauce!").message,
+          error: new Error("Cette sauce n'existe pas").message,
         });
       }
       else if (sauce.userId !== req.auth.userId) {
         res.status(401).json({
-          error: new Error("Unauthorized request!").message,
+          error: new Error("requête non autorisée!").message,
         });
       }
       else { Sauce.deleteOne({ _id: req.params.id })
@@ -81,7 +80,7 @@ exports.deleteSauce = (req, res, next) => {
             }
             else {
               res.status(200).json({
-              message: "Deleted!",
+              message: "supprimé",
               });
             }    
           })
@@ -125,7 +124,7 @@ exports.likeSauce = (req, res, next) => {
           saveSauce(sauce, 201, "dislike ajouté", res)
 
         } else {
-          console.log("error");
+          console.log("erreur");
         }
       })
       .catch((error) => res.status(500).json({ error }));
